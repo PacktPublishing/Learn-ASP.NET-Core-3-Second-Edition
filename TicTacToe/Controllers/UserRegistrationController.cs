@@ -34,11 +34,19 @@ namespace TicTacToe.Controllers
                 return View(userModel);
             }
         }
-
+       
         [HttpGet]
-        public IActionResult EmailConfirmation(string email)
+        public async Task<IActionResult> EmailConfirmation(string email)
         {
+            var user = await _userService.GetUserByEmail(email);
+            if (user?.IsEmailConfirmed == true)
+                return RedirectToAction("Index", "GameInvitation",
+                 new { email = email });
+
             ViewBag.Email = email;
+            user.IsEmailConfirmed = true;
+            user.EmailConfirmationDate = DateTime.Now;
+            await _userService.UpdateUser(user);
             return View();
         }
     }
