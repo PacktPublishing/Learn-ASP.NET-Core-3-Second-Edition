@@ -26,9 +26,20 @@ namespace TicTacToe.Controllers
             if (ModelState.IsValid)
             {
                 await _userService.RegisterUser(userModel);
-                return Content($"User {userModel.FirstName} { userModel.LastName} has been registered sucessfully");
+                return RedirectToAction(nameof(EmailConfirmation),
+                new { userModel.Email });
             }
-            return View(userModel);
+            else
+            {
+                return View(userModel);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult EmailConfirmation(string email)
+        {
+            ViewBag.Email = email;
+            return View();
         }
     }
 }
