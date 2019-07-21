@@ -4,7 +4,7 @@
             if (data === "OK") {
                 if (interval !== null)
                     clearInterval(interval);
-                alert("ok");
+                window.location.href = "/GameInvitation?email=" + email;
             }
         });
 } 
