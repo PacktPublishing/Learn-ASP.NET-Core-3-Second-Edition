@@ -78,6 +78,8 @@ namespace TicTacToe
 
             app.UseAuthorization();
 
+            app.UseWebSockets();
+
             app.UseCommunicationMiddleware();
 
             app.UseEndpoints(endpoints =>
