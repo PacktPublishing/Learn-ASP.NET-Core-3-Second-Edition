@@ -47,6 +47,7 @@ namespace TicTacToe
             services.Configure<EmailServiceOptions> (Configuration.GetSection("Email"));
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IEmailService, EmailService>();
+            services.AddSingleton<IGameInvitationService,GameInvitationService>();
             services.AddRouting();
             services.AddSession(o =>
             {
