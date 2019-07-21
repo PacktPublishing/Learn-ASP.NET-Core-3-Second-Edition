@@ -1,18 +1,15 @@
 ﻿@model TicTacToe.Models.UserModel
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = Localizer["Title"];
 }
-
-<h1>Index</h1>
-
-<h4>UserModel</h4>
+<h2>@ViewData["Title"]</h2>
+<h4>@Localizer["SubTitle"]</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Index">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
+
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />
@@ -33,7 +30,7 @@
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

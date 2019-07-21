@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +31,8 @@ namespace TicTacToe
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLocalization(options => options.ResourcesPath =
+            "Localization");
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -40,6 +45,13 @@ namespace TicTacToe
             services.AddRazorPages();
             services.AddSingleton<IUserService, UserService>();
             services.AddRouting();
+            services.AddSession(o =>
+            {
+                o.IdleTimeout = TimeSpan.FromMinutes(30); 
+            });
+            services.AddMvc().AddViewLocalization(
+          LanguageViewLocationExpanderFormat.Suffix,
+          options => options.ResourcesPath = "Localization").AddDataAnnotationsLocalization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,6 +67,8 @@ namespace TicTacToe
             }
 
             app.UseStaticFiles();
+
+            app.UseSession();
 
             var routeBuilder = new RouteBuilder(app);
 
@@ -81,6 +95,21 @@ namespace TicTacToe
             app.UseWebSockets();
 
             app.UseCommunicationMiddleware();
+
+            var supportedCultures =
+          CultureInfo.GetCultures(CultureTypes.AllCultures);
+            var localizationOptions = new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("en-US"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            };
+
+            localizationOptions.RequestCultureProviders.Clear();
+            localizationOptions.RequestCultureProviders.Add(new
+             CultureProviderResolverService());
+
+            app.UseRequestLocalization(localizationOptions);
 
             app.UseEndpoints(endpoints =>
             {
