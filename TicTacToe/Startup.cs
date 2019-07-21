@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TicTacToe.Extensions;
 using TicTacToe.Models;
+using TicTacToe.Options;
 using TicTacToe.Services;
 
 namespace TicTacToe
@@ -43,14 +44,15 @@ namespace TicTacToe
             services.AddControllersWithViews()
                 .AddNewtonsoftJson();
             services.AddRazorPages();
+            services.Configure<EmailServiceOptions> (Configuration.GetSection("Email"));
             services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IEmailService, EmailService>();
             services.AddRouting();
             services.AddSession(o =>
             {
                 o.IdleTimeout = TimeSpan.FromMinutes(30); 
             });
-            services.AddMvc().AddViewLocalization(
-          LanguageViewLocationExpanderFormat.Suffix,
+            services.AddMvc().AddViewLocalization( LanguageViewLocationExpanderFormat.Suffix,
           options => options.ResourcesPath = "Localization").AddDataAnnotationsLocalization();
         }
 
