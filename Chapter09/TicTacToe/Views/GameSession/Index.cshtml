@@ -1,0 +1,62 @@
+﻿@using Microsoft.AspNetCore.Http
+@model TicTacToe.Models.GameSessionModel
+@{
+    var email = Context.Session.GetString("email");
+}
+@section Desktop
+{
+    <h1>Game Session @Model.Id</h1>
+    <h2>Started at @(DateTime.Now.ToShortTimeString())</h2>
+    <div class="alert alert-info">
+        <table class="table">
+            <tr>
+                <td>User 1:</td>
+                <td>
+                    @Model.User1?.Email (<i class="glyphicon glyphicon-unchecked"></i>)
+                </td>
+            </tr>
+            <tr>
+                <td>User 2:</td>
+                <td>
+                    @Model.User2?.Email (<i class=" glyphicon glyphicon-remove-circle"></i>)
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+
+@section Mobile{
+    <h1>Game Session @Model.Id</h1>
+    <h2>Started at @(DateTime.Now.ToShortTimeString())</h2>
+    User 1: @Model.User1?.Email <i class="glyphicon glyphicon-unchecked"></i><br />
+    User 2: @Model.User2?.Email (<i class="glyphicon glyphicon-remove-circle"></i>)
+}
+
+<h3>User Email @email</h3>
+<h3>
+    Active User <span id="activeUser">
+        @Model.ActiveUser?.Email
+    </span>
+</h3>
+
+<vc:game-session game-session-id="@Model.Id"></vc:game-session>
+
+@*@section Scripts{
+        <script>
+                SetGameSession("@Model.Id", "@email");
+        </script>
+    }*@
+@section Scripts{
+    <script>
+
+          SetGameSession("@Model.Id", "@email");
+          EnableCheckTurnIsFinished();
+          @if(email != Model.ActiveUser?.Email)
+          {
+            <text>DisableBoard(@Model.TurnNumber);</text>
+          }
+          else
+          {
+            <text>EnableBoard(@Model.TurnNumber);</text>
+          }
+    </script> }
