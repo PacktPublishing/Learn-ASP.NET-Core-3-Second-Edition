@@ -1,0 +1,7 @@
+﻿@model TicTacToe.Models.UserRegistrationEmailModel
+@{
+    ViewData["Title"] = "View";
+    Layout = "_LayoutEmail";
+}
+<h1>Welcome @Model.DisplayName</h1>
+Thank you for registering on our website. Please click <a href="@Model.ActionUrl">here</a> to confirm your email.

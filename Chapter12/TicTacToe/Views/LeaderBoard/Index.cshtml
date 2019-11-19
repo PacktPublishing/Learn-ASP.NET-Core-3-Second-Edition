@@ -1,0 +1,34 @@
+﻿@model IEnumerable<UserModel>
+@{ViewData["Title"] = "Index";}
+    <div class="row">
+        <div class="col-lg-12">
+            @section Desktop {<h2>
+                    @Localizer["DesktopTitle"] (
+                    Last updated @(System.DateTime.Now))
+                </h2>}
+            @section Mobile {<h2>
+                    @Localizer["MobileTitle"] (
+                    Last updated @(System.DateTime.Now))
+                </h2>}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.FirstName @user.LastName</td>
+                        <td>@user.Email</td>
+                        <td>@user.Score.ToString()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        </div>
+    </div>
+    
