@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewData["Title"] = "EmailConfirmation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>EmailConfirmation</h2>
+@section Desktop{<h2>@Localizer["DesktopTitle"]</h2>}
+@section Mobile {<h2>@Localizer["MobileTitle"]</h2>}
+An email has been sent to @ViewBag.Email, please confirm your email address by clicking on the provided link.
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            EmailConfirmation('@ViewBag.Email');
+        });
+    </script>
+}

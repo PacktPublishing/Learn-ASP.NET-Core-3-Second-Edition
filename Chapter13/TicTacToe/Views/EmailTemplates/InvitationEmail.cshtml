@@ -1,0 +1,8 @@
+﻿@model TicTacToe.Models.InvitationEmailModel
+@{
+    ViewData["Title"] = "View";
+    Layout = "_LayoutEmail";
+}
+<h1>Welcome @Model.DisplayName</h1>
+You have been invited by @($"{Model.InvitedBy.FirstName} { Model.InvitedBy.LastName} ") to play the Tic-Tac-Toe game.
+Please click <a href="@Model.ConfirmationUrl">here</a> to join the game.

@@ -1,0 +1,53 @@
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    var email = User?.Identity?.Name ??    Context.Session.GetString("email");
+    var displayName = User.Claims.FirstOrDefault(
+     x => x.Type == "displayName")?.Value ??  Context.Session.GetString("displayName");
+}
+@*@using Microsoft.AspNetCore.Http;
+    @{
+        var email = Context.Session.GetString("email");
+        var displayName = Context.Session.GetString("displayName");
+    }*@
+<div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+    <ul class="navbar-nav flex-grow-1">
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Leaderboard" asp-action="Index">Leaderboard</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </li>
+        @*<li class="nav-item">
+            @if (!string.IsNullOrEmpty(email))
+            {
+                Html.RenderPartial("_Account",
+                new TicTacToe.Models.AccountModel
+                {
+                    Email = email,
+                    DisplayName = displayName
+                });
+            }
+        </li>*@
+        <li>
+            @if (!string.IsNullOrEmpty(email))
+            {
+                Html.RenderPartial("_Account",
+                 new TicTacToe.Models.AccountModel
+                 {
+                     Email = email,
+                     DisplayName = displayName
+                 });
+            }
+            else
+            {
+                <a asp-area="" asp-controller="Account"
+                   asp-action="Login">Login</a>
+            }
+        </li>
+    </ul>
+</div>
