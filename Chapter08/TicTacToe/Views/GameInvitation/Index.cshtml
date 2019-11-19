@@ -1,0 +1,32 @@
+﻿@model TicTacToe.Models.GameInvitationModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Desktop{<h2>@Localizer["DesktopTitle"]</h2>}
+@section Mobile {<h2>@Localizer["MobileTitle"]</h2>}
+<h4>GameInvitationModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="EmailTo" class="control-label"></label>
+                <input asp-for="EmailTo" class="form-control" />
+                <span asp-validation-for="EmailTo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
