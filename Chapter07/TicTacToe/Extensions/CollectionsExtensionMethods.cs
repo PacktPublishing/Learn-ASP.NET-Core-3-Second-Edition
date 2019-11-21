@@ -9,7 +9,7 @@ namespace TicTacToe.Extensions
     {
         public static bool IsNullOrEmpty<T>(this IEnumerable<T> genericEnumerable)
         {
-            return ((genericEnumerable == null) || (!genericEnumerable.Any()));
+            return (genericEnumerable == null) || (!genericEnumerable.Any());
         }
 
         public static bool IsNullOrEmpty<T>(this ICollection<T> genericCollection)

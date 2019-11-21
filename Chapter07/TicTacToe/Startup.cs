@@ -50,8 +50,7 @@ namespace TicTacToe
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IEmailService, EmailService>();
             services.AddSingleton<IGameInvitationService,GameInvitationService>();
-            services.AddHttpContextAccessor();
-            //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddHttpContextAccessor();            
             services.AddTransient<IEmailTemplateRenderService, EmailTemplateRenderService>();
             services.AddTransient<IEmailViewEngine, EmailViewEngine>();
             services.AddRouting();
@@ -59,8 +58,7 @@ namespace TicTacToe
             {
                 o.IdleTimeout = TimeSpan.FromMinutes(30); 
             });
-            //services.AddMemoryCache();
-            //services.AddSession();
+            
             services.AddSingleton<IGameSessionService, GameSessionService>();
             services.AddMvc().AddViewLocalization( LanguageViewLocationExpanderFormat.Suffix,
           options => options.ResourcesPath = "Localization").AddDataAnnotationsLocalization();
@@ -136,14 +134,7 @@ namespace TicTacToe
                     pattern : "{area:exists}/{controller=Home}/{action=Index}/{id?}"
                     );                 
             });
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute(
-            //      name: "areas",
-            //      template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-            //    );
-            //});
-
+            
             app.UseStatusCodePages("text/plain", "HTTP Error - Status Code: {0}");            
         }
     }
