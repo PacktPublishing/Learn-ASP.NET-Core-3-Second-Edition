@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TicTacToe.Extensions;
 using TicTacToe.Models;
 
 namespace TicTacToe.Services
@@ -47,7 +48,7 @@ namespace TicTacToe.Services
         {
             var gameSession = _sessions.FirstOrDefault(session => session.Id == id);
             List<TurnModel> turns;
-            if (gameSession.Turns != null && gameSession.Turns.Any())
+            if (gameSession.Turns.IsNullOrEmpty())
                 turns = new List<TurnModel>(gameSession.Turns);
             else
                 turns = new List<TurnModel>();
