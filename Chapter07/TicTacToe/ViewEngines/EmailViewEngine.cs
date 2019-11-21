@@ -47,18 +47,15 @@ namespace TicTacToe.ViewEngines
             var view = FindView(actionContext, viewName);
             if (view == null)
                 throw new InvalidOperationException(string.Format("Couldn't find view '{0}'", viewName));
-            using (var output = new StringWriter())
+            using var output = new StringWriter();
+            var viewContext = new ViewContext(actionContext, view, 
+                new ViewDataDictionary<TModel>(metadataProvider: new EmptyModelMetadataProvider(), modelState: new ModelStateDictionary())
             {
-                var viewContext = new ViewContext(actionContext, view, new ViewDataDictionary<TModel>(
-                metadataProvider: new EmptyModelMetadataProvider(),
-                modelState: new ModelStateDictionary())
-                {
-                    Model = model
-                },
-                new TempDataDictionary(actionContext.HttpContext, _tempDataProvider), output, new HtmlHelperOptions());
-                await view.RenderAsync(viewContext);
-                return output.ToString();
-            }
+                Model = model
+            },
+new         TempDataDictionary(actionContext.HttpContext, _tempDataProvider), output, new HtmlHelperOptions());
+            await view.RenderAsync(viewContext);
+            return output.ToString();
         }
 
         private ActionContext GetActionContext()
