@@ -24,6 +24,8 @@ using Swashbuckle.AspNetCore.Swagger;
 using System.Reflection;
 using System.IO;
 using Microsoft.OpenApi.Models;
+using TicTacToe.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace TicTacToe
 {
@@ -100,6 +102,14 @@ namespace TicTacToe
                 
             }).AddViewLocalization( LanguageViewLocationExpanderFormat.Suffix,
              options => options.ResourcesPath = "Localization").AddDataAnnotationsLocalization();
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            services.AddEntityFrameworkSqlServer()
+            .AddDbContext<GameDbContext>((serviceProvider, options) =>
+            options.UseSqlServer(connectionString).UseInternalServiceProvider(serviceProvider)
+            );
+            var dbContextOptionsbuilder =
+            new DbContextOptionsBuilder<GameDbContext>().UseSqlServer(connectionString);
+            services.AddSingleton(dbContextOptionsbuilder.Options);
 
         }
 
