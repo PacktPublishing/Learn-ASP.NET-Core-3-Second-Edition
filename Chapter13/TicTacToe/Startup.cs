@@ -28,6 +28,7 @@ using TicTacToe.Managers;
 using TicTacToe.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.AzureAppServices;
 
 namespace TicTacToe
 {
@@ -112,7 +113,8 @@ namespace TicTacToe
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.SignIn.RequireConfirmedEmail = false;
-            }).AddEntityFrameworkStores<GameDbContext>().AddDefaultTokenProviders();
+            });//.AddEntityFrameworkStores<GameDbContext>().AddDefaultTokenProviders();
+           // }).AddEntityFrameworkStores<GameDbContext>().AddDefaultTokenProviders();
 
             services.AddAuthentication(options => {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -125,6 +127,7 @@ namespace TicTacToe
                 
             }).AddViewLocalization( LanguageViewLocationExpanderFormat.Suffix,
              options => options.ResourcesPath = "Localization").AddDataAnnotationsLocalization();
+            services.Configure<AzureFileLoggerOptions>(Configuration.GetSection("AzureLogging"));
 
         }
 
@@ -189,8 +192,7 @@ namespace TicTacToe
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "LEARNING ASP.CORE 3.0 V1");
-                //c.RoutePrefix = string.Empty;
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "LEARNING ASP.CORE 3.0 V1");               
             });
 
             app.UseEndpoints(endpoints =>
@@ -204,14 +206,7 @@ namespace TicTacToe
                     areaName: "Account",
                     pattern : "{area:exists}/{controller=Home}/{action=Index}/{id?}"
                     );                 
-            });
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute(
-            //      name: "areas",
-            //      template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-            //    );
-            //});
+            });            
 
             app.UseStatusCodePages("text/plain", "HTTP Error - Status Code: {0}");
             var provider = app.ApplicationServices;

@@ -73,7 +73,7 @@ namespace TicTacToe.Services
         {
             using (var gameDbContext =  new GameDbContext(_dbContextOptions))
             {
-                return await gameDbContext.UserModels.OrderByDescending(
+                return await gameDbContext.UserModels?.OrderByDescending(
                  x => x.Score).ToListAsync();
             }
         }

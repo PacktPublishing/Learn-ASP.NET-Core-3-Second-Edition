@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TicTacToe.Services;
@@ -16,11 +17,26 @@ namespace TicTacToe.Areas.Account.Controllers
         {
             _userService = userService;
         }
+
+        [Authorize]
         public async Task<IActionResult> Index()
         {
-            var email = HttpContext.Session.GetString("email");
-            var user = await _userService.GetUserByEmail(email);
+            var user = await _userService.GetUserByEmail(User.Identity.Name);
             return View(user);
+        }
+
+        [Authorize]
+        public IActionResult EnableTwoFactor()
+        {
+            _userService.EnableTwoFactor(User.Identity.Name, true);
+            return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        public IActionResult DisableTwoFactor()
+        {
+            _userService.EnableTwoFactor(User.Identity.Name, false);
+            return RedirectToAction("Index");
         }
     }
 }

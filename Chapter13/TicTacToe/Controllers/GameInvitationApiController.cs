@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Halcyon.HAL;
+using Halcyon.Web.HAL;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TicTacToe.Models;
@@ -22,9 +24,44 @@ namespace TicTacToe.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<GameInvitationModel>> Get()
+        public async Task<IActionResult> Get()
         {
-            return await _gameInvitationService.All();
+            var invitations = await _gameInvitationService.All();
+            var responseConfig = new HALModelConfig
+            {
+                LinkBase = $"{Request.Scheme}://{Request.Host.ToString()}",
+                ForceHAL = Request.ContentType == "application/hal+json" ? true : false
+            };
+
+            var response = new HALResponse(responseConfig);
+            response.AddLinks(new Link("self", "/GameInvitation"),
+                new Link("confirm", "/GameInvitation/{id}/Confirm"));
+
+            List<HALResponse> invitationsResponses = new List<HALResponse>();
+            foreach (var invitation in invitations)
+            {
+                var rInv = new HALResponse(invitation, responseConfig);
+
+                rInv.AddLinks(new Link("self", "/GameInvitation/" + invitation.Id));
+                rInv.AddLinks(new Link("confirm", $"/GameInvitation/{invitation.Id}/confirm"));
+
+                var invitedPlayer = _userService.GetUserByEmail(invitation.EmailTo);
+                rInv.AddEmbeddedResource("invitedPlayer", invitedPlayer, new Link[]
+                {
+            new Link("self", $"/User/{invitedPlayer.Id}")
+                });
+
+                var invitedBy = _userService.GetUserByEmail(invitation.InvitedBy);
+                rInv.AddEmbeddedResource("invitedBy", invitedBy, new Link[]
+                {
+            new Link("self", $"/User/{invitedBy.Id}")
+                });
+
+                invitationsResponses.Add(rInv);
+            }
+
+            response.AddEmbeddedCollection("invitations", invitationsResponses);
+            return this.HAL(response);
         }
 
         [HttpGet("{id}", Name = "Get")]
@@ -34,7 +71,7 @@ namespace TicTacToe.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]GameInvitationModel  invitation)
+        public IActionResult Post([FromBody]GameInvitationModel invitation)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -52,7 +89,7 @@ namespace TicTacToe.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var invitedPlayer =   _userService.GetUserByEmail(invitation.EmailTo);
+            var invitedPlayer = _userService.GetUserByEmail(invitation.EmailTo);
             if (invitedPlayer == null) return BadRequest();
 
             _gameInvitationService.Update(invitation);

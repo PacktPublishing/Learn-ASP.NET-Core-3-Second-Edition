@@ -16,14 +16,13 @@ namespace TicTacToe.Controllers
         readonly IUserService _userService;
         readonly IEmailService _emailService;
         readonly ILogger<UserRegistrationController> _logger;
-        public UserRegistrationController(IUserService userService,
-         IEmailService emailService, ILogger<UserRegistrationController>
-         logger)
+        public UserRegistrationController(IUserService userService, IEmailService emailService, ILogger<UserRegistrationController> logger)
         {
             _userService = userService;
             _emailService = emailService;
             _logger = logger;
         }
+
         public async Task<IActionResult> Index()
         {
             return await Task.Run(() =>
@@ -37,9 +36,8 @@ namespace TicTacToe.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _userService.RegisterUser(userModel);
-                return RedirectToAction(nameof(EmailConfirmation),
-                new { userModel.Email });
+                await _userService.RegisterUser(userModel, true);
+                return RedirectToAction(nameof(EmailConfirmation), new { userModel.Email });
             }
             else
             {
@@ -47,56 +45,20 @@ namespace TicTacToe.Controllers
             }
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> ConfirmEmail(string email)
-        //{
-        //    var user = await _userService.GetUserByEmail(email);
-        //    if (user != null)
-        //    {
-        //        user.IsEmailConfirmed = true;
-        //        user.EmailConfirmationDate = DateTime.Now;
-        //        await _userService.UpdateUser(user);
-        //        return RedirectToAction("Index", "Home");
-        //    }
-        //    return BadRequest();
-        //}
-
-        [HttpGet]
-        public async Task<IActionResult> ConfirmEmail(string email, string code)
-        {
-            var confirmed = await _userService.ConfirmEmail(email, code);
-
-            if (!confirmed)
-                return BadRequest();
-
-            return RedirectToAction("Index", "Home");
-        }
-
         [HttpGet]
         public async Task<IActionResult> EmailConfirmation(string email)
         {
-            _logger.LogInformation($"##Start## Email confirmation  process for { email} ");
+            _logger.LogInformation($"##Start## Email confirmation process for {email}");
             var user = await _userService.GetUserByEmail(email);
-            //var urlAction = new UrlActionContext
-            //{
-            //    Action = "ConfirmEmail",
-            //    Controller = "UserRegistration",
-            //    Values = new { email },
-            //    Protocol = Request.Scheme,
-            //    Host = Request.Host.ToString()
-            //};
             var urlAction = new UrlActionContext
             {
                 Action = "ConfirmEmail",
                 Controller = "UserRegistration",
-                Values = new
-                {
-                    email,
-                    code =  await _userService.GetEmailConfirmationCode(user)
-                },
+                Values = new { email, code = await _userService.GetEmailConfirmationCode(user) },
                 Protocol = Request.Scheme,
                 Host = Request.Host.ToString()
             };
+
             var userRegistrationEmail = new UserRegistrationEmailModel
             {
                 DisplayName = $"{user.FirstName} {user.LastName}",
@@ -107,23 +69,31 @@ namespace TicTacToe.Controllers
             var emailRenderService = HttpContext.RequestServices.GetService<IEmailTemplateRenderService>();
             var message = await emailRenderService.RenderTemplate("EmailTemplates/UserRegistrationEmail", userRegistrationEmail, Request.Host.ToString());
 
-            
             try
             {
-                _emailService.SendEmail(email,
-                 "Tic-Tac-Toe Email Confirmation", message).Wait();
+                _emailService.SendEmail(email, "Tic-Tac-Toe Email Confirmation", message).Wait();
             }
             catch (Exception e)
             {
             }
 
             if (user?.IsEmailConfirmed == true)
-                return RedirectToAction("Index", "GameInvitation",
-                 new { email = email });
+                return RedirectToAction("Index", "GameInvitation", new { email = email });
 
             ViewBag.Email = email;
-            
+
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string email, string code)
+        {
+            var confirmed = await _userService.ConfirmEmail(email, code);
+
+            if (!confirmed)
+                return BadRequest();
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

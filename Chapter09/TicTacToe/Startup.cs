@@ -53,21 +53,21 @@ namespace TicTacToe
             services.AddControllersWithViews()
                 .AddNewtonsoftJson();
             services.AddRazorPages();
-            services.Configure<EmailServiceOptions> (Configuration.GetSection("Email"));
+            services.Configure<EmailServiceOptions>(Configuration.GetSection("Email"));
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IEmailService, EmailService>();
-            services.AddSingleton<IGameInvitationService,GameInvitationService>();
+            services.AddSingleton<IGameInvitationService, GameInvitationService>();
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
                     Title = "Learning ASP.Net Core 3.0 Rest-API",
                     Version = "v1",
                     Description = "Demonstrating auto-generated API documentation",
                     Contact = new OpenApiContact
                     {
                         Name = "Kenneth Fukizi",
-                        Email = "example@example.com",
-                        //Url = new Uri("https://twitter.com/afrikan_coder"),
+                        Email = "example@example.com",                       
                     },
                     License = new OpenApiLicense
                     {
@@ -75,11 +75,7 @@ namespace TicTacToe
                         Url = new Uri("https://example.com/license"),
                     }
                 });
-
-                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-
-                //options.IncludeXmlComments(xmlPath);
+               
             });
             services.AddHttpContextAccessor();
             //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -88,27 +84,25 @@ namespace TicTacToe
             services.AddRouting();
             services.AddSession(o =>
             {
-                o.IdleTimeout = TimeSpan.FromMinutes(30); 
+                o.IdleTimeout = TimeSpan.FromMinutes(30);
             });
-            //services.AddMemoryCache();
-            //services.AddSession();
+
             services.AddSingleton<IGameSessionService, GameSessionService>();
-            //  services.AddMvc().AddViewLocalization( LanguageViewLocationExpanderFormat.Suffix,
-            //options => options.ResourcesPath = "Localization").AddDataAnnotationsLocalization();
-            //  services.AddMvc(o => o.Filters.Add(typeof(DetectMobileFilter)));
+
             services.AddMvc(o =>
             {
                 o.Filters.Add(typeof(DetectMobileFilter));
-                
-            }).AddViewLocalization( LanguageViewLocationExpanderFormat.Suffix,
+
+            }).AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
              options => options.ResourcesPath = "Localization").AddDataAnnotationsLocalization();
+
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddEntityFrameworkSqlServer()
-            .AddDbContext<GameDbContext>((serviceProvider, options) =>
-            options.UseSqlServer(connectionString).UseInternalServiceProvider(serviceProvider)
-            );
+                .AddDbContext<GameDbContext>((serviceProvider, options) =>
+                    options.UseSqlServer(connectionString).UseInternalServiceProvider(serviceProvider)
+                );
             var dbContextOptionsbuilder =
-            new DbContextOptionsBuilder<GameDbContext>().UseSqlServer(connectionString);
+                new DbContextOptionsBuilder<GameDbContext>().UseSqlServer(connectionString);
             services.AddSingleton(dbContextOptionsbuilder.Options);
 
         }
@@ -144,7 +138,7 @@ namespace TicTacToe
 
             var newUserRoutes = routeBuilder.Build();
             app.UseRouter(newUserRoutes);
-            
+
             app.UseCookiePolicy();
 
             app.UseRouting();
@@ -173,8 +167,7 @@ namespace TicTacToe
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "LEARNING ASP.CORE 3.0 V1");
-                //c.RoutePrefix = string.Empty;
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "LEARNING ASP.CORE 3.0 V1");                
             });
 
             app.UseEndpoints(endpoints =>
@@ -186,18 +179,11 @@ namespace TicTacToe
                 endpoints.MapAreaControllerRoute(
                     name: "areas",
                     areaName: "Account",
-                    pattern : "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-                    );                 
-            });
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute(
-            //      name: "areas",
-            //      template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-            //    );
-            //});
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                    );
+            });           
 
-            app.UseStatusCodePages("text/plain", "HTTP Error - Status Code: {0}");            
+            app.UseStatusCodePages("text/plain", "HTTP Error - Status Code: {0}");
         }
     }
 }

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TicTacToe.Models;
 
 namespace TicTacToe.Controllers
 {
@@ -30,15 +29,16 @@ namespace TicTacToe.Controllers
             });
         }
 
-        public IActionResult Privacy()
+        //[Authorize]
+        //[Authorize(Roles = "Administrator")]
+        [Authorize(Policy = "AdministratorAccessLevelPolicy")]
+        public async Task<IActionResult> SecuredPage()
         {
-            return View();
+            return await Task.Run(() =>
+            {
+                ViewBag.SecureWord = "Secured Page";
+                return View("SecuredPage");
+            });
         }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }        
     }
 }
