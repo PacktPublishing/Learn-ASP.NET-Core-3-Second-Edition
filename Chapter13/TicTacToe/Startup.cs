@@ -148,6 +148,20 @@ namespace TicTacToe
                 facebook.ClientSecret = "123";
             });
 
+            //services.AddApplicationInsightsTelemetry(Configuration);
+            var section = Configuration.GetSection("Monitoring");
+            var monitoringOptions = new MonitoringOptions();
+            section.Bind(monitoringOptions);
+            services.AddSingleton(monitoringOptions);
+
+            if (monitoringOptions.MonitoringType == "azureapplicationinsights")
+            {
+                services.AddSingleton<IMonitoringService, AzureApplicationInsightsMonitoringService>();
+            }
+            else if (monitoringOptions.MonitoringType == "amazonwebservicescloudwatch")
+            {
+                services.AddSingleton<IMonitoringService, AmazonWebServicesMonitoringService>();
+            }
             services.AddMvc(o =>
             {
                 o.Filters.Add(typeof(DetectMobileFilter));
