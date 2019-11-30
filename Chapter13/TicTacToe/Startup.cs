@@ -83,10 +83,18 @@ namespace TicTacToe
 
 
             services.Configure<EmailServiceOptions> (Configuration.GetSection("Email"));
-            
-            services.AddSingleton<IEmailService, EmailService>();
-            
-            
+            services.AddEmailService(HostingEnvironment, Configuration);
+            //services.AddSingleton<IEmailService, EmailService>();
+            services.AddTransient<IEmailTemplateRenderService, EmailTemplateRenderService>();
+            services.AddTransient<IEmailViewEngine, EmailViewEngine>();
+
+            services.AddRouting();
+            services.AddSession(o =>
+            {
+                o.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
+
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo {
@@ -113,25 +121,11 @@ namespace TicTacToe
             });
             services.AddHttpContextAccessor();
             //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddTransient<IEmailTemplateRenderService, EmailTemplateRenderService>();
-            services.AddTransient<IEmailViewEngine, EmailViewEngine>();
-            services.AddRouting();
-            services.AddSession(o =>
-            {
-                o.IdleTimeout = TimeSpan.FromMinutes(30); 
-            });
-            //services.AddMemoryCache();
-            //services.AddSession();
-           
-            
-            //    services.AddScoped(typeof(DbContextOptions<GameDbContext>),
-            //(serviceProvider) =>
-            //{
-            //    return new DbContextOptionsBuilder<GameDbContext>()
-            //     .UseSqlServer(connectionString).Options;
-            //});
-            services.AddDbContext<GameDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+
+
+            //services.AddDbContext<GameDbContext>(options =>
+            //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<UserModel, RoleModel>(options =>
             {
                 options.Password.RequiredLength = 1;
@@ -140,7 +134,7 @@ namespace TicTacToe
                 options.Password.RequireUppercase = false;
                 options.SignIn.RequireConfirmedEmail = false;
             });//.AddEntityFrameworkStores<GameDbContext>().AddDefaultTokenProviders();
-           // }).AddEntityFrameworkStores<GameDbContext>().AddDefaultTokenProviders();
+            // }).AddEntityFrameworkStores<GameDbContext>().AddDefaultTokenProviders();
 
             services.AddAuthentication(options => {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
