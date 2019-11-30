@@ -134,13 +134,20 @@ namespace TicTacToe
                 options.Password.RequireUppercase = false;
                 options.SignIn.RequireConfirmedEmail = false;
             });//.AddEntityFrameworkStores<GameDbContext>().AddDefaultTokenProviders();
-            // }).AddEntityFrameworkStores<GameDbContext>().AddDefaultTokenProviders();
+               // }).AddEntityFrameworkStores<GameDbContext>().AddDefaultTokenProviders();
 
             services.AddAuthentication(options => {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            }).AddCookie();
+            }).AddCookie().AddFacebook(facebook =>
+            {
+                facebook.AppId = "123";
+                facebook.AppSecret = "123";
+                facebook.ClientId = "123";
+                facebook.ClientSecret = "123";
+            });
+
             services.AddMvc(o =>
             {
                 o.Filters.Add(typeof(DetectMobileFilter));

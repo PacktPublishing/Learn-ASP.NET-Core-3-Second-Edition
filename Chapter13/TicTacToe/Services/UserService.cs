@@ -24,6 +24,7 @@ namespace TicTacToe.Services
         private ILogger<UserService> _logger;
         private ApplicationUserManager _userManager;
         private SignInManager<UserModel> _signInManager;
+        private DbContextOptions<GameDbContext> options;
         private readonly IMonitoringService _telemetryClient;
         public UserService(RoleManager<RoleModel> roleManager, ApplicationUserManager userManager, ILogger<UserService> logger, SignInManager<UserModel> signInManager, IMonitoringService telemetryClient)
         {
@@ -40,6 +41,11 @@ namespace TicTacToe.Services
 
             if (!roleManager.RoleExistsAsync("Administrator").Result)
                 roleManager.CreateAsync(new RoleModel { Name = "Administrator" }).Wait();
+        }
+
+        public UserService(DbContextOptions<GameDbContext> options)
+        {
+            this.options = options;
         }
 
         public async Task<bool> ConfirmEmail(string email, string code)
