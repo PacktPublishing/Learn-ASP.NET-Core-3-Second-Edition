@@ -34,12 +34,14 @@ namespace TicTacToe
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostEnvironment hostingEnvironment)
         {
             Configuration = configuration;
+            HostingEnvironment = hostingEnvironment;
         }
 
         public IConfiguration Configuration { get; }
+        public IHostEnvironment HostingEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -56,11 +58,35 @@ namespace TicTacToe
             services.AddControllersWithViews()
                 .AddNewtonsoftJson();
             services.AddRazorPages();
-            services.Configure<EmailServiceOptions> (Configuration.GetSection("Email"));
-            services.AddTransient<IUserService, UserService>();
-            services.AddSingleton<IEmailService, EmailService>();
-            services.AddScoped<IGameInvitationService,GameInvitationService>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdministratorAccessLevelPolicy", policy => policy.RequireClaim("AccessLevel", "Administrator"));
+            });
             services.AddTransient<ApplicationUserManager>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IGameInvitationService, GameInvitationService>();
+            services.AddScoped<IGameSessionService, GameSessionService>();
+
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            services.AddEntityFrameworkSqlServer()
+                .AddDbContext<GameDbContext>((serviceProvider, options) =>
+                    options.UseSqlServer(connectionString)
+                            .UseInternalServiceProvider(serviceProvider)
+                            );
+
+            services.AddScoped(typeof(DbContextOptions<GameDbContext>), (serviceProvider) =>
+            {
+                return new DbContextOptionsBuilder<GameDbContext>()
+                    .UseSqlServer(connectionString).Options;
+            });
+
+
+            services.Configure<EmailServiceOptions> (Configuration.GetSection("Email"));
+            
+            services.AddSingleton<IEmailService, EmailService>();
+            
+            
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo {
@@ -96,8 +122,8 @@ namespace TicTacToe
             });
             //services.AddMemoryCache();
             //services.AddSession();
-            services.AddScoped<IGameSessionService, GameSessionService>();
-            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+           
+            
             //    services.AddScoped(typeof(DbContextOptions<GameDbContext>),
             //(serviceProvider) =>
             //{
