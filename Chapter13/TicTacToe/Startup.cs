@@ -29,6 +29,9 @@ using TicTacToe.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.AzureAppServices;
+using Microsoft.AspNetCore.Identity;
+using TicTacToe.Monitoring;
+using System.Diagnostics;
 
 namespace TicTacToe
 {
@@ -64,7 +67,7 @@ namespace TicTacToe
                 options.AddPolicy("AdministratorAccessLevelPolicy", policy => policy.RequireClaim("AccessLevel", "Administrator"));
             });
             services.AddTransient<ApplicationUserManager>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddTransient<IUserService, UserService>();
             services.AddScoped<IGameInvitationService, GameInvitationService>();
             services.AddScoped<IGameSessionService, GameSessionService>();
 
@@ -122,10 +125,11 @@ namespace TicTacToe
             services.AddHttpContextAccessor();
             //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-
+           
 
             //services.AddDbContext<GameDbContext>(options =>
             //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            
             services.AddIdentity<UserModel, RoleModel>(options =>
             {
                 options.Password.RequiredLength = 1;
@@ -133,7 +137,7 @@ namespace TicTacToe
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.SignIn.RequireConfirmedEmail = false;
-            });//.AddEntityFrameworkStores<GameDbContext>().AddDefaultTokenProviders();
+            }).AddEntityFrameworkStores<GameDbContext>().AddDefaultTokenProviders();
                // }).AddEntityFrameworkStores<GameDbContext>().AddDefaultTokenProviders();
 
             services.AddAuthentication(options => {
@@ -173,8 +177,10 @@ namespace TicTacToe
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DiagnosticListener diagnosticListener)
         {
+            var listener = new ApplicationDiagnosticListener();
+            diagnosticListener.SubscribeWithAdapter(listener);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
