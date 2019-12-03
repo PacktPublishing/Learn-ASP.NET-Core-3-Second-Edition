@@ -23,10 +23,10 @@ namespace TicTacToe.Services
         private ApplicationUserManager _userManager;
         private DbContextOptions<GameDbContext> _dbContextOptions;
         private SignInManager<UserModel> _signInManager;
-        public UserService(DbContextOptions<GameDbContext> dbContextOptions)
-        {
-            _dbContextOptions = dbContextOptions;
-        }
+        //public UserService(DbContextOptions<GameDbContext> dbContextOptions)
+        //{
+        //    _dbContextOptions = dbContextOptions;
+        //}
         public UserService(ApplicationUserManager userManager,   ILogger<UserService> logger , SignInManager<UserModel> signInManager)
         {
             _userManager = userManager;

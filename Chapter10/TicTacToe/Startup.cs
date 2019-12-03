@@ -27,6 +27,7 @@ using Microsoft.OpenApi.Models;
 using TicTacToe.Managers;
 using TicTacToe.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace TicTacToe
@@ -79,10 +80,6 @@ namespace TicTacToe
                     }
                 });
 
-                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-
-                //options.IncludeXmlComments(xmlPath);
             });
             services.AddHttpContextAccessor();
             //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -97,14 +94,13 @@ namespace TicTacToe
             //services.AddSession();
             services.AddScoped<IGameSessionService, GameSessionService>();
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
-            //    services.AddScoped(typeof(DbContextOptions<GameDbContext>),
-            //(serviceProvider) =>
-            //{
-            //    return new DbContextOptionsBuilder<GameDbContext>()
-            //     .UseSqlServer(connectionString).Options;
-            //});
-            services.AddDbContext<GameDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddEntityFrameworkSqlServer()
+                .AddDbContext<GameDbContext>((serviceProvider, options) =>
+                    options.UseSqlServer(connectionString).UseInternalServiceProvider(serviceProvider)
+                );
+            var dbContextOptionsbuilder =
+                new DbContextOptionsBuilder<GameDbContext>().UseSqlServer(connectionString);
+            services.AddSingleton(dbContextOptionsbuilder.Options);
             services.AddIdentity<UserModel, RoleModel>(options =>
             {
                 options.Password.RequiredLength = 1;
@@ -205,14 +201,7 @@ namespace TicTacToe
                     pattern : "{area:exists}/{controller=Home}/{action=Index}/{id?}"
                     );                 
             });
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute(
-            //      name: "areas",
-            //      template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-            //    );
-            //});
-
+            
             app.UseStatusCodePages("text/plain", "HTTP Error - Status Code: {0}");
             var provider = app.ApplicationServices;
             var scopeFactory =
