@@ -27,6 +27,7 @@ using Microsoft.OpenApi.Models;
 using TicTacToe.Managers;
 using TicTacToe.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace TicTacToe
@@ -155,7 +156,7 @@ namespace TicTacToe
                 var password = context.Request.Query["password"];
                 var userService = context.RequestServices.GetService<IUserService>();
                 userService.RegisterUser(new UserModel { FirstName = firstName, LastName = lastName, Email = email, Password = password });
-                return context.Response.WriteAsync($"User {firstName} {lastName} has been sucessfully created.");
+                return context.Response.WriteAsync($"User {firstName} {lastName} has been successfully created.");
             });
 
             var newUserRoutes = routeBuilder.Build();
@@ -190,7 +191,7 @@ namespace TicTacToe
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "LEARNING ASP.CORE 3.0 V1");
-                //c.RoutePrefix = string.Empty;
+               
             });
 
             app.UseEndpoints(endpoints =>
@@ -205,14 +206,7 @@ namespace TicTacToe
                     pattern : "{area:exists}/{controller=Home}/{action=Index}/{id?}"
                     );                 
             });
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute(
-            //      name: "areas",
-            //      template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-            //    );
-            //});
-
+            
             app.UseStatusCodePages("text/plain", "HTTP Error - Status Code: {0}");
             var provider = app.ApplicationServices;
             var scopeFactory =
