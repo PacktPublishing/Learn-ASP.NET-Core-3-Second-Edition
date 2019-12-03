@@ -12,11 +12,11 @@ namespace TicTacToe.Extensions
     {
         public static void RemovePluralizingTableNameConvention(this ModelBuilder modelBuilder)
         {
-            //foreach (IMutableEntityType entity in modelBuilder.Model.GetEntityTypes())
-            //{
-            //    //entity.Relational().TableName = entity.DisplayName();
-                
-            //}
+            foreach (IMutableEntityType entity in modelBuilder.Model.GetEntityTypes())
+            {
+                entity.SetTableName(entity.DisplayName());
+
+            }
         }
     }
 }
