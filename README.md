@@ -42,18 +42,10 @@ This book is for developers who want to build modern web applications with ASP.N
 
 With the following software and hardware list you can run all code files present in the book (Chapter 1-).
 ### Software and Hardware List
-| Chapter | Software required | OS required |
+| No | Software required | OS required |
 | -------- | ------------------------------------ | ----------------------------------- |
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
+| 1 | Visual Studio 2019 | Windows, Linux, macOS |
+
 
 We also provide a PDF file that has color images of the screenshots/diagrams used in this book. [Click here to download it](https://static.packt-cdn.com/downloads/9781789610130_ColorImages.pdf).
 
@@ -62,9 +54,6 @@ We also provide a PDF file that has color images of the screenshots/diagrams use
 
 * Hands-On Design Patterns with C# and .NET Core  [[Packt]](https://www.packtpub.com/application-development/hands-design-patterns-c-and-net-core?utm_source=github&utm_medium=repository&utm_campaign=) [[Amazon]](https://www.amazon.com/dp/B07CSKCRNM)
 
-*  [[Packt]]() [[Amazon]](https://www.amazon.com/dp/)
-
-*  [[Packt]]() [[Amazon]](https://www.amazon.com/dp/)
 
 ## Get to Know the Author
 **Kenneth Yamikani Fukizi**
