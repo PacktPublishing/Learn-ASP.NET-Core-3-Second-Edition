@@ -1,10 +1,10 @@
 # Learn ASP.NET Core 3 - Second Edition 
 
-<a href="https://www.packtpub.com/web-development/learn-asp-net-core-3-second-edition?utm_source=github&utm_medium=repository&utm_campaign="><img src="" alt="Learn ASP.NET Core 3 - Second Edition " height="256px" align="right"></a>
+<a href="https://www.packtpub.com/web-development/learn-asp-net-core-3-second-edition?utm_source=github&utm_medium=repository&utm_campaign="><img src="https://www.packtpub.com/media/catalog/product/cache/e4d64343b1bc593f1c5348fe05efa4a6/9/7/9781789610130-original.jpeg" alt="Learn ASP.NET Core 3 - Second Edition " height="256px" align="right"></a>
 
 This is the code repository for [Learn ASP.NET Core 3 - Second Edition ](https://www.packtpub.com/web-development/learn-asp-net-core-3-second-edition?utm_source=github&utm_medium=repository&utm_campaign=), published by Packt.
 
-**Develop modern web applications with ASP.NET Core 3, Visual Studio 2019, and Azure	**
+**Develop modern web applications with ASP.NET Core 3, Visual Studio 2019, and Azure**
 
 ## What is this book about?
 This book is for developers who want to build modern web applications with ASP.NET Core. The book will also be helpful for anyone working in infrastructure engineering and operations to monitor and diagnose problems during the runtime of ASP.NET Core 3.0 web applications. Although no prior understanding of ASP.NET or .NET Core is required, basic C# programming knowledge is assumed.
